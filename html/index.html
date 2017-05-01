@@ -1,0 +1,90 @@
+<html>
+<head>
+    <script src="http://geohex.net/src/script/hex_v3.2_core.js" async defer></script>
+    <script src="map.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 95%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<div>
+    <span>Google Maps zoom level: <span class="gmaps_zoom"></span></span><br>
+    <span>Geohex level: <span class="ghex_zoom"></span></span>
+</div>
+<script>
+    var map;
+    var markers = [];
+    var gmapsDefaultZoom = 8;
+
+    // Google Maps読み込み後のコールバック
+    function initMap() {
+        var elem = document.getElementsByClassName('gmaps_zoom');
+        elem[0].innerText = gmapsDefaultZoom;
+
+        // mapオブジェクト初期化
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 35.685175, lng: 139.7528},
+            scrollwheel: false,
+            zoom: gmapsDefaultZoom
+        });
+
+        // mapズーム変更したらズームレベルを表示
+        google.maps.event.addListener(map, 'zoom_changed', function () {
+            var elem = document.getElementsByClassName('gmaps_zoom');
+            elem[0].innerText = map.zoom;
+        });
+
+        // mapクリックしたらhexを書く
+        google.maps.event.addListener(map, 'click', function (evt) {
+            var pos = evt.latLng;
+            var i;
+            for (i = 4; i < 15; i++) {
+                // スコープ分ける
+                (function () {
+                    var _i = i;
+
+                    // geohex描く
+                    var zone = GEOHEX.getZoneByLocation(pos.lat(), pos.lng(), i);
+                    drawHex(zone, map);
+
+                    // geohexの中心点にマーカーを立てる。mouse overしたらspan更新。
+                    markers[i] = new google.maps.Marker({
+                        position: {lat: zone.lat, lng: zone.lon},
+                        map: map
+                    });
+                    markers[i].addListener('mouseover', function () {
+                        var elem = document.getElementsByClassName('ghex_zoom');
+                        elem[0].innerText = _i;
+                    });
+                })();
+            }
+        });
+    }
+
+    // geohex zoneから頂点を拾ってきてPolygonを描画する
+    function drawHex(zone, map) {
+        var coords = zone.getHexCoords();
+        var len = 6;    // == coords.length
+        var gCoords = new Array(len);
+        for (var idx = 0; idx < len; idx++) {
+            gCoords[idx] = new google.maps.LatLng(coords[idx].lat, coords[idx].lon);
+        }
+        var hexPolygon = new google.maps.Polygon({
+            paths: gCoords,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.6,
+            strokeWeight: 2.0,
+            fillColor: "#efefef",
+            fillOpacity: 0.5
+        });
+        hexPolygon.setMap(map);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGaoKxPF0l--sNaGMWzZwNnUj8CiWtesY&callback=initMap" async
+        defer></script>
+</body>
+</html>
