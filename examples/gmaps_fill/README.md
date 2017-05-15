@@ -2,6 +2,10 @@
 
 This sample fills displayed area of Google Maps with GeoHex.
 
+![fill the map](./screenshot.png)
+
+![fill the map 2](./screenshot2.png)
+
 ## Flow
 
 1. Initialize Google Map
