@@ -1,8 +1,4 @@
-# Geohex level vs Google Maps zoom level
+# GeoHex examples
 
-I had to check the zoom level of google maps and geohex.
-It's sample project for checking both level between google maps and geohex.
-
-Click map to draw hex using GeoHex.
-
-![screen shot](./screenshot.png)
+- [Comparison of geohex level and Google Maps zoom level](./examples/gmaps_level_comparison)
+- [Fill displayed area of Google Maps with hex](./examples/gmaps_fill/)
