@@ -1,4 +1,4 @@
-# Fill all displayed area of Google Maps
+# Fill displayed area of Google Maps with GeoHex
 
 This sample fills displayed area of Google Maps with GeoHex.
 
